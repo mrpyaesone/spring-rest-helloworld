@@ -24,7 +24,7 @@ jobs:
               mvn versions:set -DnewVersion=$(cat tempvers.txt) \n"
           name: "remove snapshot version"
       - 
-        run: "mvn package"
+        run: "mvn clean package"
       - 
         run: 
           command: |
