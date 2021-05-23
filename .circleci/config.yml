@@ -28,10 +28,12 @@ jobs:
       - 
         run: 
           command: |
-              cp target/*.jar docker_operation_ps/apps/
-              docker login -u $DOCKER_REPO_USERNAME -p $DOCKER_REPO_PASSWORD
-              docker build --no-cache -t mrpyaesone25/spring-rest-helloworld:$(cat tempvers.txt) -f docker_operation_ps/Dockerfile_spring .
-              docker push mrpyaesone25/spring-rest-helloworld:$(cat tempvers.txt)
+              cd target
+              ls -la
+              # cp target/*.jar docker_operation_ps/apps/
+              # docker login -u $DOCKER_REPO_USERNAME -p $DOCKER_REPO_PASSWORD
+              # docker build --no-cache -t mrpyaesone25/spring-rest-helloworld:$(cat tempvers.txt) -f docker_operation_ps/Dockerfile_spring .
+              # docker push mrpyaesone25/spring-rest-helloworld:$(cat tempvers.txt)
           name: "Build application Docker image"
     working_directory: ~/spring-rest-helloworld
 version: 2
