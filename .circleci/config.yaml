@@ -1,0 +1,37 @@
+--- 
+jobs: 
+  build: 
+    docker: 
+      - 
+        image: "circleci/openjdk:8-jdk-browsers"
+    steps: 
+      - checkout
+      - setup_remote_docker
+      - 
+        restore_cache: 
+          key: "spring-rest-helloworld-{{ checksum \"pom.xml\" }}"
+      - 
+        run: "mvn dependency:go-offline"
+      - 
+        save_cache: 
+          key: "spring-rest-helloworld-{{ checksum \"pom.xml\" }}"
+          paths: 
+            - ~/.m2
+      - 
+        run: "mvn package"
+      - 
+        run: 
+          command: "if mvn -q -Dexec.executable=\"echo\" -Dexec.args='${project.version}' --non-recursive exec:exec | grep -q \"SNAPSHOT\"; then mvn versions:set -DremoveSnapshot; fi;\n\
+              echo $(mvn -q -Dexec.executable=\"echo\" -Dexec.args='${project.version}' --non-recursive exec:exec)-$(echo $CIRCLE_SHA1 | cut -c -7)-$CIRCLE_BUILD_NUM > tempvers.txt\n\
+              mvn versions:set -DnewVersion=$(cat tempvers.txt) \n"
+          name: "remove snapshot version"
+      - 
+        run: 
+          command: |
+              cp target/*.jar docker_operation_ps/apps/
+              docker login -u "mrpyaesone25" -p "w@terFal|2021"
+              docker build --no-cache -t mrpyaesone25/spring-rest-helloworld:$(cat tempvers.txt) -f docker_operation_ps/Dockerfile_spring .
+              docker push mrpyaesone25/spring-rest-helloworld:$(cat tempvers.txt)
+          name: "Build application Docker image"
+    working_directory: ~/spring-rest-helloworld
+version: 2
