@@ -1,4 +1,4 @@
 FROM openjdk:8-jdk-alpine
 RUN mkdir -p /usr/local/myapp/config
-ADD ./apps/*.jar /usr/local/myapp/
+COPY apps/*.jar /usr/local/myapp/
 ENTRYPOINT [ "sh", "-c", "java -jar /usr/local/myapp/spring-rest-helloworld.jar" ]
